@@ -1,0 +1,5 @@
+set(TEST_NAME simple_tests)
+set(CMAKE_CXX_STANDARD 17)
+set(SOURCE_FILES catch_main.cpp simple_tests.cpp)
+add_executable(${TEST_NAME} ${SOURCE_FILES})
+add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
