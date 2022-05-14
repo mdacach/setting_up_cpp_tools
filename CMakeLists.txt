@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 
 # Set up project name
-project(setting_up_cpp_tools)
+set(PROJECT_NAME setting_up_cpp_tools)
+project(${PROJECT_NAME})
 
 # Set up C++ version to be used, globally
 set(CMAKE_CXX_STANDARD 17)
@@ -49,5 +50,11 @@ if (ENABLE_CLANG_TIDY)
     endif ()
 endif ()
 
-add_executable(setting_up_cpp_tools
+# Address and UB sanitizers
+option(ENABLE_SANITIZERS "Enable address and undefined behavior sanitizers" ON)
+if (ENABLE_SANITIZERS)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
+endif ()
+
+add_executable(${PROJECT_NAME}
         main.cpp)
