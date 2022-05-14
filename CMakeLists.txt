@@ -7,7 +7,7 @@ project(setting_up_cpp_tools)
 set(CMAKE_CXX_STANDARD 17)
 
 # Set compiler warnings
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" TRUE)
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
 # I use GCC, on Linux
 set(GCC_WARNINGS " \
@@ -20,11 +20,34 @@ set(GCC_WARNINGS " \
         -Wuseless-cast -Wdouble-promotion \
         -Wformat=2 ")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_WARNINGS}")
+
 if (WARNINGS_AS_ERRORS)
     set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Werror ") # Append to previous warnings
 endif ()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_WARNINGS}")
+# Static Analyzers (Thanks to https://github.com/euripedesrocha/ctdsp/blob/master/cmake/StaticAnalyzers.cmake)
+option(ENABLE_CPPCHECK "Enable static analysis with cppcheck" ON)
+option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy" ON)
+
+if (ENABLE_CPPCHECK)
+    find_program(CPPCHECK cppcheck)
+    if (CPPCHECK)
+        set(CMAKE_CXX_CPPCHECK ${CPPCHECK} --suppress=missingInclude --enable=all
+                --inline-suppr --inconclusive -i ${CMAKE_SOURCE_DIR}/imgui/lib)
+    else ()
+        message(SEND_ERROR "cppcheck requested but executable not found")
+    endif ()
+endif ()
+
+if (ENABLE_CLANG_TIDY)
+    find_program(CLANGTIDY clang-tidy)
+    if (CLANGTIDY)
+        set(CMAKE_CXX_CLANG_TIDY ${CLANGTIDY} -extra-arg=-Wno-unknown-warning-option)
+    else ()
+        message(SEND_ERROR "clang-tidy requested but executable not found")
+    endif ()
+endif ()
 
 add_executable(setting_up_cpp_tools
         main.cpp)
