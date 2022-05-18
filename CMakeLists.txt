@@ -19,7 +19,7 @@ set(GCC_WARNINGS " \
         -Wduplicated-cond -Wduplicated-branches \
         -Wlogical-op -Wnull-dereference \
         -Wuseless-cast -Wdouble-promotion \
-        -Wformat=2 ")
+        -Wformat=2 -std=c++17 ")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_WARNINGS}")
 
