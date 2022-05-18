@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 # Set up project name
-set(PROJECT_NAME setting_up_cpp_tools)
+set(PROJECT_NAME soundex)
 project(${PROJECT_NAME})
 
 # Set up C++ version to be used, globally
