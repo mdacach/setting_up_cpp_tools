@@ -8,16 +8,12 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
 
     SECTION("Retains sole letter of one-letter word")
     {
-        const auto encoded = soundex.Encode("A");
-
-        CHECK(encoded == "A000");
+        CHECK(soundex.Encode("A") == "A000");
     }
 
     SECTION("Pads zeros until three digits")
     {
-        const auto encoded = soundex.Encode("I");
-
-        CHECK(encoded == "I000");
+        CHECK(soundex.Encode("I") == "I000");
     }
 }
 
