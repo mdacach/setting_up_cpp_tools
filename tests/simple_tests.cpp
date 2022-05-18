@@ -11,22 +11,23 @@ private:
     auto PadWithZeros(std::string_view word) const -> std::string { return std::string{ word } + "000"; }
 };
 
-TEST_CASE("Retains sole letter of one-letter word", "[soundex_encoding]")
+TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
 {
-    auto soundex = Soundex{};
+    const auto soundex = Soundex{};
 
-    const auto encoded = soundex.Encode("A");
+    SECTION("Retains sole letter of one-letter word")
+    {
+        const auto encoded = soundex.Encode("A");
 
-    CHECK(encoded == "A000");
-}
+        CHECK(encoded == "A000");
+    }
 
-TEST_CASE("Pads zeros until three digits", "[soundex_encoding]")
-{
-    auto soundex = Soundex{};
+    SECTION("Pads zeros until three digits")
+    {
+        const auto encoded = soundex.Encode("I");
 
-    const auto encoded = soundex.Encode("I");
-
-    CHECK(encoded == "I000");
+        CHECK(encoded == "I000");
+    }
 }
 
 // Test list
