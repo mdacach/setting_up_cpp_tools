@@ -1,15 +1,6 @@
 #include "catch.hpp"
-#include <string_view>
 
-using namespace std::string_literals;
-class Soundex
-{
-public:
-    auto Encode(std::string_view word) const -> std::string { return PadWithZeros(word); }
-
-private:
-    auto PadWithZeros(std::string_view word) const -> std::string { return std::string{ word } + "000"; }
-};
+#include "../soundex.hpp"
 
 TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
 {
