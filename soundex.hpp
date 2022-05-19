@@ -42,7 +42,7 @@ private:
                 digits.push_back(EncodeDigit(letter).front());
                 ++processed_consonants;
             }
-            if (processed_consonants == 3)
+            if (processed_consonants + 1 == FIXED_SIZE) // We already have the first letter "as is"
                 break;
         }
         return digits;

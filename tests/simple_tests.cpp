@@ -37,6 +37,11 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
     {
         CHECK(soundex.Encode("Acdl") == "A234");
     }
+
+    SECTION("Limits length to four characters")
+    {
+        CHECK(soundex.Encode("Dcdlb").length() == 4);
+    }
 }
 
 // Test list
