@@ -47,6 +47,19 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
     {
         CHECK(soundex.Encode("Baeiouhycdl") == "B234");
     }
+
+    SECTION("Combines duplicated encodings when all are duplicated")
+    {
+        // Note that 'b' and 'f' both encode to '1'
+        // 'c' and 'g' both encode to '2'
+        // and 'd' and 't' both encode to '3'
+        CHECK(soundex.Encode("Abfcgdt") == "A123");
+    }
+
+    SECTION("Combines duplicated encodings")
+    {
+        CHECK(soundex.Encode("Abdtl") == "A134");
+    }
 }
 
 // Test list

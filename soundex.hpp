@@ -25,35 +25,39 @@ private:
 
     auto EncodeDigits(const std::string& word) const -> std::string
     {
-        auto IsConsonant = [](const char letter)
-        {
-            if (!std::isalpha(letter))
-                return false;
-            // We do not consider 'y' to be a vowel here
-            const auto vowels = std::vector<char>{ 'a', 'e', 'i', 'o', 'u' };
-            return std::find(std::begin(vowels), std::end(vowels), tolower(letter)) == std::end(vowels);
-        };
-        auto ShouldBeIgnored = [](const char letter)
-        {
-            if (!std::isalpha(letter))
-                return true;
-            const auto ignored_consonants = std::vector<char>{ 'w', 'h', 'y' };
-            return std::find(std::begin(ignored_consonants), std::end(ignored_consonants), letter) !=
-                   std::end(ignored_consonants);
-        };
         auto digits = std::string{};
-        auto processed_consonants = std::size_t{ 0 };
+        auto encoded_consonants = std::size_t{ 0 };
         for (const auto& letter : word)
         {
-            if (IsConsonant(letter) && !ShouldBeIgnored(letter))
+            if (IsConsonant(letter) && !ConsonantShouldBeIgnored(letter))
             {
-                digits.push_back(EncodeDigit(letter).front());
-                ++processed_consonants;
+                const auto to_encode = EncodeDigit(letter).front();
+                if (digits.empty() || to_encode != digits.back())
+                {
+                    digits.push_back(to_encode);
+                    ++encoded_consonants;
+                }
             }
-            if (processed_consonants + 1 == FIXED_SIZE) // We already have the first letter "as is"
+            if (encoded_consonants + 1 == FIXED_SIZE) // We already have the first letter "as is"
                 break;
         }
         return digits;
+    }
+
+    auto IsConsonant(const char letter) const -> bool
+    {
+        if (!std::isalpha(letter))
+            return false;
+        // We do not consider 'y' to be a vowel here
+        const auto vowels = std::vector<char>{ 'a', 'e', 'i', 'o', 'u' };
+        return std::find(std::begin(vowels), std::end(vowels), tolower(letter)) == std::end(vowels);
+    }
+
+    auto ConsonantShouldBeIgnored(const char letter) const -> bool
+    {
+        const auto ignored_consonants = std::vector<char>{ 'w', 'h', 'y' };
+        return std::find(std::begin(ignored_consonants), std::end(ignored_consonants), letter) !=
+               std::end(ignored_consonants);
     }
 
     auto EncodeDigit(const char letter) const -> std::string
