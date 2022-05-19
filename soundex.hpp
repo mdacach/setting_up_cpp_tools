@@ -6,14 +6,46 @@
 #pragma once
 
 #include <string>
-#include <string_view>
+#include <unordered_map>
 
-using namespace std::string_literals;
 class Soundex
 {
+    static const std::size_t FIXED_SIZE{ 4 };
+
 public:
-    auto Encode(std::string_view word) const -> std::string { return PadWithZeros(word); }
+    auto Encode(const std::string& word) const -> std::string { return PadWithZeros(Head(word) + EncodeDigits(word)); }
 
 private:
-    auto PadWithZeros(std::string_view word) const -> std::string { return std::string{ word } + "000"; }
+    auto Head(const std::string& word) const -> std::string { return word.substr(0, 1); }
+
+    auto EncodeDigits(const std::string& word) const -> std::string
+    {
+        if (word.length() >= 2)
+            return EncodeDigit(word.at(1));
+        return "";
+    }
+
+    auto EncodeDigit(const char letter) const -> std::string
+    {
+        // clang-format off
+        const static std::unordered_map<char, std::string> encodings
+        {
+            { 'b', "1" }, { 'f', "1" }, { 'p', "1" }, { 'v', "1" },
+            { 'c', "2" }, { 'g', "2" }, { 'j', "2" }, { 'k', "2" }, { 'q', "2" },
+                               { 's', "2" }, { 'x', "2" }, { 'z', "2"},
+            { 'd', "3" }, { 't', "3" },
+            { 'l', "4" },
+            { 'm', "5" }, { 'n', "5" },
+            { 'r', "6" },
+        };
+        // clang-format on
+
+        return encodings.find(letter)->second;
+    }
+
+    auto PadWithZeros(const std::string& word) const -> std::string
+    {
+        const auto zeros_needed = FIXED_SIZE - word.length();
+        return std::string{ word } + std::string(zeros_needed, '0');
+    }
 };
