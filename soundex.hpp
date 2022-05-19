@@ -40,7 +40,8 @@ private:
         };
         // clang-format on
 
-        return encodings.find(letter)->second;
+        const auto& item = encodings.find(letter);
+        return item == std::end(encodings) ? "" : item->second;
     }
 
     auto PadWithZeros(const std::string& word) const -> std::string
