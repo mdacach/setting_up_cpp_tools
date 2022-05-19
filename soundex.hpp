@@ -13,16 +13,39 @@ class Soundex
     static const std::size_t FIXED_SIZE{ 4 };
 
 public:
-    auto Encode(const std::string& word) const -> std::string { return PadWithZeros(Head(word) + EncodeDigits(word)); }
+    auto Encode(const std::string& word) const -> std::string
+    {
+        return PadWithZeros(Head(word) + EncodeDigits(Tail(word)));
+    }
 
 private:
     auto Head(const std::string& word) const -> std::string { return word.substr(0, 1); }
 
+    auto Tail(const std::string& word) const -> std::string { return word.substr(1); }
+
     auto EncodeDigits(const std::string& word) const -> std::string
     {
-        if (word.length() >= 2)
-            return EncodeDigit(word.at(1));
-        return "";
+        auto IsConsonant = [](const char letter)
+        {
+            if (!std::isalpha(letter))
+                return false;
+            // We do not consider 'y' to be a vowel here
+            std::vector<char> vowels{ 'a', 'e', 'i', 'o', 'u' };
+            return std::find(std::begin(vowels), std::end(vowels), tolower(letter)) == std::end(vowels);
+        };
+        auto digits = std::string{};
+        auto processed_consonants = std::size_t{ 0 };
+        for (const auto& letter : word)
+        {
+            if (IsConsonant(letter))
+            {
+                digits.push_back(EncodeDigit(letter).front());
+                ++processed_consonants;
+            }
+            if (processed_consonants == 3)
+                break;
+        }
+        return digits;
     }
 
     auto EncodeDigit(const char letter) const -> std::string

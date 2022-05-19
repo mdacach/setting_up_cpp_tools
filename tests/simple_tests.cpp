@@ -28,8 +28,14 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
         CHECK(soundex.Encode("Mm") == "M500");
     }
 
-    SECTION("Ignores Non Alphabetics") {
+    SECTION("Ignores Non Alphabetics")
+    {
         CHECK(soundex.Encode("A#") == "A000");
+    }
+
+    SECTION("Replaces multiple consonants with digits")
+    {
+        CHECK(soundex.Encode("Acdl") == "A234");
     }
 }
 
