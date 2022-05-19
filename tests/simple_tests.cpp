@@ -60,6 +60,11 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
     {
         CHECK(soundex.Encode("Abdtl") == "A134");
     }
+
+    SECTION("Makes first letter uppercase")
+    {
+        CHECK(soundex.Encode("abcd").front() == 'A');
+    }
 }
 
 // Test list

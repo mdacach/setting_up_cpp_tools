@@ -15,13 +15,18 @@ class Soundex
 public:
     auto Encode(const std::string& word) const -> std::string
     {
-        return PadWithZeros(Head(word) + EncodeDigits(Tail(word)));
+        return PadWithZeros(ToUppercase(Head(word)) + EncodeDigits(Tail(word)));
     }
 
 private:
     auto Head(const std::string& word) const -> std::string { return word.substr(0, 1); }
 
     auto Tail(const std::string& word) const -> std::string { return word.substr(1); }
+
+    auto ToUppercase(const std::string& word) const -> std::string
+    {
+        return std::string(1, static_cast<char>(std::toupper(static_cast<unsigned char>(word.front()))));
+    }
 
     auto EncodeDigits(const std::string& word) const -> std::string
     {
