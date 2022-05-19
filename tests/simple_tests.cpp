@@ -42,6 +42,11 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
     {
         CHECK(soundex.Encode("Dcdlb").length() == 4);
     }
+
+    SECTION("Ignores vowel like letters")
+    {
+        CHECK(soundex.Encode("Baeiouhycdl") == "B234");
+    }
 }
 
 // Test list

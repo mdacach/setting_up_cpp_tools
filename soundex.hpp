@@ -30,14 +30,22 @@ private:
             if (!std::isalpha(letter))
                 return false;
             // We do not consider 'y' to be a vowel here
-            std::vector<char> vowels{ 'a', 'e', 'i', 'o', 'u' };
+            const auto vowels = std::vector<char>{ 'a', 'e', 'i', 'o', 'u' };
             return std::find(std::begin(vowels), std::end(vowels), tolower(letter)) == std::end(vowels);
+        };
+        auto ShouldBeIgnored = [](const char letter)
+        {
+            if (!std::isalpha(letter))
+                return true;
+            const auto ignored_consonants = std::vector<char>{ 'w', 'h', 'y' };
+            return std::find(std::begin(ignored_consonants), std::end(ignored_consonants), letter) !=
+                   std::end(ignored_consonants);
         };
         auto digits = std::string{};
         auto processed_consonants = std::size_t{ 0 };
         for (const auto& letter : word)
         {
-            if (IsConsonant(letter))
+            if (IsConsonant(letter) && !ShouldBeIgnored(letter))
             {
                 digits.push_back(EncodeDigit(letter).front());
                 ++processed_consonants;
