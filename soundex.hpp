@@ -19,15 +19,6 @@ public:
     }
 
 private:
-    auto Head(const std::string& word) const -> std::string { return word.substr(0, 1); }
-
-    auto Tail(const std::string& word) const -> std::string { return word.substr(1); }
-
-    auto ToUppercase(const std::string& word) const -> std::string
-    {
-        return std::string(1, static_cast<char>(std::toupper(static_cast<unsigned char>(word.front()))));
-    }
-
     auto EncodeDigits(const std::string& word) const -> std::string
     {
         auto digits = std::string{};
@@ -52,6 +43,37 @@ private:
         return digits;
     }
 
+    auto EncodeDigit(char letter) const -> std::optional<char>
+    {
+        // clang-format off
+        const static std::unordered_map<char, char> encodings
+            {
+                { 'b', '1' }, { 'f', '1' }, { 'p', '1' }, { 'v', '1' },
+                { 'c', '2' }, { 'g', '2' }, { 'j', '2' }, { 'k', '2' }, { 'q', '2' },
+                { 's', '2' }, { 'x', '2' }, { 'z', '2'},
+                { 'd', '3' }, { 't', '3' },
+                { 'l', '4' },
+                { 'm', '5' }, { 'n', '5' },
+                { 'r', '6' },
+            };
+        // clang-format on
+
+        letter = static_cast<char>(tolower(letter));
+        const auto& item = encodings.find(letter);
+        if (item == std::end(encodings))
+            return std::nullopt;
+        return item->second;
+    }
+
+    auto Head(const std::string& word) const -> std::string { return word.substr(0, 1); }
+
+    auto Tail(const std::string& word) const -> std::string { return word.substr(1); }
+
+    auto ToUppercase(const std::string& word) const -> std::string
+    {
+        return std::string(1, static_cast<char>(std::toupper(static_cast<unsigned char>(word.front()))));
+    }
+
     auto IsConsonant(const char letter) const -> bool
     {
         if (!std::isalpha(letter))
@@ -66,27 +88,6 @@ private:
         const auto ignored_consonants = std::vector<char>{ 'w', 'h', 'y', 'W', 'H', 'Y' };
         return std::find(std::begin(ignored_consonants), std::end(ignored_consonants), letter) !=
                std::end(ignored_consonants);
-    }
-
-    auto EncodeDigit(const char letter) const -> std::optional<char>
-    {
-        // clang-format off
-        const static std::unordered_map<char, char> encodings
-        {
-            { 'b', '1' }, { 'f', '1' }, { 'p', '1' }, { 'v', '1' },
-            { 'c', '2' }, { 'g', '2' }, { 'j', '2' }, { 'k', '2' }, { 'q', '2' },
-                               { 's', '2' }, { 'x', '2' }, { 'z', '2'},
-            { 'd', '3' }, { 't', '3' },
-            { 'l', '4' },
-            { 'm', '5' }, { 'n', '5' },
-            { 'r', '6' },
-        };
-        // clang-format on
-
-        const auto& item = encodings.find(letter);
-        if (item == std::end(encodings))
-            return std::nullopt;
-        return item->second;
     }
 
     auto PadWithZeros(const std::string& word) const -> std::string

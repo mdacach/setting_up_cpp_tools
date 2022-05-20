@@ -70,6 +70,11 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
     {
         CHECK(soundex.Encode("BaAeEiIoOuUhHyYcdl") == "B234");
     }
+
+    SECTION("Ignores case when encoding consonants")
+    {
+        CHECK(soundex.Encode("BCDL") == soundex.Encode("Bcdl"));
+    }
 }
 
 // Test list
