@@ -32,11 +32,6 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
         CHECK(soundex.Encode("Mm") == "M000");
     }
 
-    SECTION("Ignores Non Alphabetics")
-    {
-        CHECK(soundex.Encode("A#") == "A000");
-    }
-
     SECTION("Replaces multiple consonants with digits")
     {
         CHECK(soundex.Encode("Acdl") == "A234");
@@ -88,6 +83,15 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
     SECTION("Does not combine duplicate encoding separated by vowels")
     {
         CHECK(soundex.Encode("Jbob") == "J110");
+    }
+
+    SECTION("Should throw on input with non-alphabetic letters")
+    {
+        CHECK_THROWS(soundex.Encode("Mr.Smith"));
+        CHECK_THROWS(soundex.Encode("123"));
+        CHECK_THROWS(soundex.Encode("Normalwordbutnumber4"));
+        CHECK_THROWS(soundex.Encode("Some sentence with spaces"));
+        CHECK_THROWS(soundex.Encode(":/',f"));
     }
 }
 

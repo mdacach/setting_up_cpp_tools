@@ -15,10 +15,23 @@ class Soundex
 public:
     auto Encode(const std::string& word) const -> std::string
     {
+        if (!SanitizeInput(word))
+            throw std::runtime_error("Input is not allowed. When input: " + word);
         return PadWithZeros(ToUppercase(Head(word)) + Tail(EncodeDigits(word)));
     }
 
 private:
+    // Returns true if input is OK, false otherwise.
+    auto SanitizeInput(const std::string& word) const -> bool
+    {
+        return std::all_of(std::cbegin(word), std::cend(word),
+                           [](char c)
+                           {
+                               // We need the cast here because:
+                               // https://en.cppreference.com/w/cpp/string/byte/isalpha See notes
+                               return std::isalpha(static_cast<unsigned char>(c));
+                           });
+    }
     auto EncodeDigits(const std::string& word) const -> std::string
     {
         auto digits = std::string{};
