@@ -8,6 +8,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "helpers.hpp"
+
 class Soundex
 {
     static const std::size_t FIXED_SIZE{ 4 };
@@ -17,7 +19,13 @@ public:
     {
         if (!SanitizeInput(word))
             throw std::runtime_error("Input is not allowed. When input: " + word);
-        return PadWithZeros(ToUppercase(Head(word)) + Tail(EncodeDigits(word)));
+        const auto encoding = [&word]
+        {
+            auto first_letter = Helpers::ToUppercase(Helpers::Head(word));
+            auto tail_encoding = Helpers::Tail(EncodeDigits(word));
+            return first_letter + tail_encoding;
+        }();
+        return Helpers::PadWithZeros(encoding, FIXED_SIZE);
     }
 
 private:
@@ -44,9 +52,9 @@ private:
 
         auto last_letter = char{ '*' };
         auto encoded_consonants = std::size_t{ 0 };
-        for (const auto& letter : Tail(word))
+        for (const auto& letter : Helpers::Tail(word))
         {
-            if (IsConsonant(letter) && !ConsonantShouldBeIgnored(letter))
+            if (Helpers::IsConsonant(letter) && !Helpers::ConsonantShouldBeIgnored(letter))
             {
                 const auto to_encode = EncodeDigit(letter);
                 if (!to_encode.has_value())
@@ -56,7 +64,7 @@ private:
                 }
                 const auto value = to_encode.value();
                 const auto same_of_last_digit = value == digits.back();
-                const auto last_letter_vowel = IsVowel(last_letter);
+                const auto last_letter_vowel = Helpers::IsVowel(last_letter);
                 if (digits.empty() || (!same_of_last_digit || last_letter_vowel))
                 {
                     digits.push_back(value);
@@ -90,41 +98,5 @@ private:
         if (item == std::end(encodings))
             return std::nullopt;
         return item->second;
-    }
-
-    static auto Head(const std::string& word) -> std::string { return word.substr(0, 1); }
-
-    static auto Tail(const std::string& word) -> std::string { return word.substr(1); }
-
-    static auto ToUppercase(const std::string& word) -> std::string
-    {
-        return std::string(1, static_cast<char>(std::toupper(static_cast<unsigned char>(word.front()))));
-    }
-
-    static auto IsConsonant(char letter) -> bool
-    {
-        // We do not consider 'y' to be a vowel here
-        letter = static_cast<char>(std::tolower(letter));
-        const auto vowels = std::vector<char>{ 'a', 'e', 'i', 'o', 'u' };
-        return std::find(std::begin(vowels), std::end(vowels), tolower(letter)) == std::end(vowels);
-    }
-
-    static auto IsVowel(char letter) -> bool
-    {
-        // Given it is alphabetic, it must be consonant or vowel
-        return !IsConsonant(letter);
-    }
-
-    static auto ConsonantShouldBeIgnored(const char letter) -> bool
-    {
-        const auto ignored_consonants = std::vector<char>{ 'w', 'h', 'y', 'W', 'H', 'Y' };
-        return std::find(std::begin(ignored_consonants), std::end(ignored_consonants), letter) !=
-               std::end(ignored_consonants);
-    }
-
-    static auto PadWithZeros(const std::string& word) -> std::string
-    {
-        const auto zeros_needed = FIXED_SIZE - word.length();
-        return std::string{ word } + std::string(zeros_needed, '0');
     }
 };
