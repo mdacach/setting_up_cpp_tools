@@ -60,7 +60,7 @@ private:
 
     auto ConsonantShouldBeIgnored(const char letter) const -> bool
     {
-        const auto ignored_consonants = std::vector<char>{ 'w', 'h', 'y' };
+        const auto ignored_consonants = std::vector<char>{ 'w', 'h', 'y', 'W', 'H', 'Y' };
         return std::find(std::begin(ignored_consonants), std::end(ignored_consonants), letter) !=
                std::end(ignored_consonants);
     }

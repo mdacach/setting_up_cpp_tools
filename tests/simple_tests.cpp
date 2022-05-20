@@ -65,6 +65,11 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
     {
         CHECK(soundex.Encode("abcd").front() == 'A');
     }
+
+    SECTION("Ignores vowel-like letters")
+    {
+        CHECK(soundex.Encode("BaAeEiIoOuUhHyYcdl") == "B234");
+    }
 }
 
 // Test list
