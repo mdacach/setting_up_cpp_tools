@@ -79,6 +79,11 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
     {
         CHECK(soundex.Encode("BCDL") == soundex.Encode("Bcdl"));
     }
+
+    SECTION("Combines duplicate codes when 2nd letter duplicates 1st")
+    {
+        CHECK(soundex.Encode("Bbcd") == "B230");
+    }
 }
 
 // Test list

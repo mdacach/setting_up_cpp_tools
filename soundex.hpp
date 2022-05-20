@@ -15,15 +15,19 @@ class Soundex
 public:
     auto Encode(const std::string& word) const -> std::string
     {
-        return PadWithZeros(ToUppercase(Head(word)) + EncodeDigits(Tail(word)));
+        return PadWithZeros(ToUppercase(Head(word)) + Tail(EncodeDigits(word)));
     }
 
 private:
     auto EncodeDigits(const std::string& word) const -> std::string
     {
         auto digits = std::string{};
+        // We need to check on the first digit's code, in order to avoid duplication
+        const auto first_code = EncodeDigit(word.front());
+        digits.push_back(first_code.value_or('*'));
+
         auto encoded_consonants = std::size_t{ 0 };
-        for (const auto& letter : word)
+        for (const auto& letter : Tail(word))
         {
             if (IsConsonant(letter) && !ConsonantShouldBeIgnored(letter))
             {
