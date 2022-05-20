@@ -84,6 +84,11 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
     {
         CHECK(soundex.Encode("Bbcd") == "B230");
     }
+
+    SECTION("Does not combine duplicate encoding separated by vowels")
+    {
+        CHECK(soundex.Encode("Jbob") == "J110");
+    }
 }
 
 // Test list

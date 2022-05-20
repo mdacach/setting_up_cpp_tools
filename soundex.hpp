@@ -26,6 +26,7 @@ private:
         const auto first_code = EncodeDigit(word.front());
         digits.push_back(first_code.value_or('*'));
 
+        auto last_letter = char{ '*' };
         auto encoded_consonants = std::size_t{ 0 };
         for (const auto& letter : Tail(word))
         {
@@ -33,14 +34,20 @@ private:
             {
                 const auto to_encode = EncodeDigit(letter);
                 if (!to_encode.has_value())
+                {
+                    last_letter = letter;
                     continue;
+                }
                 const auto value = to_encode.value();
-                if (digits.empty() || value != digits.back())
+                const auto same_of_last_digit = value == digits.back();
+                const auto last_letter_vowel = IsVowel(last_letter);
+                if (digits.empty() || (!same_of_last_digit || last_letter_vowel))
                 {
                     digits.push_back(value);
                     ++encoded_consonants;
                 }
             }
+            last_letter = letter;
             if (encoded_consonants + 1 == FIXED_SIZE) // We already have the first letter "as is"
                 break;
         }
@@ -78,13 +85,24 @@ private:
         return std::string(1, static_cast<char>(std::toupper(static_cast<unsigned char>(word.front()))));
     }
 
-    auto IsConsonant(const char letter) const -> bool
+    auto IsConsonant(char letter) const -> bool
     {
         if (!std::isalpha(letter))
             return false;
         // We do not consider 'y' to be a vowel here
+        letter = static_cast<char>(std::tolower(letter));
         const auto vowels = std::vector<char>{ 'a', 'e', 'i', 'o', 'u' };
         return std::find(std::begin(vowels), std::end(vowels), tolower(letter)) == std::end(vowels);
+    }
+
+    auto IsVowel(char letter) const -> bool
+    {
+        if (!std::isalpha(letter))
+            return false;
+        if (std::isdigit(letter))
+            return false;
+        // Given it is alphabetic, it must be consonant or vowel
+        return !IsConsonant(letter);
     }
 
     auto ConsonantShouldBeIgnored(const char letter) const -> bool
