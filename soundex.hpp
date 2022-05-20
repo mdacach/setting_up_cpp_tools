@@ -34,6 +34,7 @@ private:
                                return std::isalpha(static_cast<unsigned char>(c));
                            });
     }
+
     static auto EncodeDigits(const std::string& word) -> std::string
     {
         auto digits = std::string{};
@@ -102,8 +103,6 @@ private:
 
     static auto IsConsonant(char letter) -> bool
     {
-        if (!std::isalpha(letter))
-            return false;
         // We do not consider 'y' to be a vowel here
         letter = static_cast<char>(std::tolower(letter));
         const auto vowels = std::vector<char>{ 'a', 'e', 'i', 'o', 'u' };
@@ -112,10 +111,6 @@ private:
 
     static auto IsVowel(char letter) -> bool
     {
-        if (!std::isalpha(letter))
-            return false;
-        if (std::isdigit(letter))
-            return false;
         // Given it is alphabetic, it must be consonant or vowel
         return !IsConsonant(letter);
     }
