@@ -13,7 +13,7 @@ class Soundex
     static const std::size_t FIXED_SIZE{ 4 };
 
 public:
-    auto Encode(const std::string& word) const -> std::string
+    static auto Encode(const std::string& word) -> std::string
     {
         if (!SanitizeInput(word))
             throw std::runtime_error("Input is not allowed. When input: " + word);
@@ -22,7 +22,7 @@ public:
 
 private:
     // Returns true if input is OK, false otherwise.
-    auto SanitizeInput(const std::string& word) const -> bool
+    static auto SanitizeInput(const std::string& word) -> bool
     {
         if (std::size(word) == 0)
             return false;
@@ -34,7 +34,7 @@ private:
                                return std::isalpha(static_cast<unsigned char>(c));
                            });
     }
-    auto EncodeDigits(const std::string& word) const -> std::string
+    static auto EncodeDigits(const std::string& word) -> std::string
     {
         auto digits = std::string{};
         // We need to check on the first digit's code, in order to avoid duplication
@@ -69,7 +69,7 @@ private:
         return digits;
     }
 
-    auto EncodeDigit(char letter) const -> std::optional<char>
+    static auto EncodeDigit(char letter) -> std::optional<char>
     {
         // clang-format off
         const static std::unordered_map<char, char> encodings
@@ -91,16 +91,16 @@ private:
         return item->second;
     }
 
-    auto Head(const std::string& word) const -> std::string { return word.substr(0, 1); }
+    static auto Head(const std::string& word) -> std::string { return word.substr(0, 1); }
 
-    auto Tail(const std::string& word) const -> std::string { return word.substr(1); }
+    static auto Tail(const std::string& word) -> std::string { return word.substr(1); }
 
-    auto ToUppercase(const std::string& word) const -> std::string
+    static auto ToUppercase(const std::string& word) -> std::string
     {
         return std::string(1, static_cast<char>(std::toupper(static_cast<unsigned char>(word.front()))));
     }
 
-    auto IsConsonant(char letter) const -> bool
+    static auto IsConsonant(char letter) -> bool
     {
         if (!std::isalpha(letter))
             return false;
@@ -110,7 +110,7 @@ private:
         return std::find(std::begin(vowels), std::end(vowels), tolower(letter)) == std::end(vowels);
     }
 
-    auto IsVowel(char letter) const -> bool
+    static auto IsVowel(char letter) -> bool
     {
         if (!std::isalpha(letter))
             return false;
@@ -120,14 +120,14 @@ private:
         return !IsConsonant(letter);
     }
 
-    auto ConsonantShouldBeIgnored(const char letter) const -> bool
+    static auto ConsonantShouldBeIgnored(const char letter) -> bool
     {
         const auto ignored_consonants = std::vector<char>{ 'w', 'h', 'y', 'W', 'H', 'Y' };
         return std::find(std::begin(ignored_consonants), std::end(ignored_consonants), letter) !=
                std::end(ignored_consonants);
     }
 
-    auto PadWithZeros(const std::string& word) const -> std::string
+    static auto PadWithZeros(const std::string& word) -> std::string
     {
         const auto zeros_needed = FIXED_SIZE - word.length();
         return std::string{ word } + std::string(zeros_needed, '0');
