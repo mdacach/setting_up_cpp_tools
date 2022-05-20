@@ -16,16 +16,20 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
         CHECK(soundex.Encode("I") == "I000");
     }
 
-    SECTION("Replaces consonants with appropriate digits")
+    SECTION("Replaces non-repeated consonants with appropriate digits")
     {
         CHECK(soundex.Encode("Ab") == "A100");
         CHECK(soundex.Encode("Ac") == "A200");
         CHECK(soundex.Encode("Ad") == "A300");
         CHECK(soundex.Encode("Af") == "A100");
-        CHECK(soundex.Encode("Bf") == "B100");
-        CHECK(soundex.Encode("Dd") == "D300");
         CHECK(soundex.Encode("Fm") == "F500");
-        CHECK(soundex.Encode("Mm") == "M500");
+    }
+
+    SECTION("Ignores repeated adjacent consonants codes")
+    {
+        CHECK(soundex.Encode("Bf") == "B000");
+        CHECK(soundex.Encode("Dd") == "D000");
+        CHECK(soundex.Encode("Mm") == "M000");
     }
 
     SECTION("Ignores Non Alphabetics")
