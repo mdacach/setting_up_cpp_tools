@@ -36,10 +36,13 @@ private:
         {
             if (IsConsonant(letter) && !ConsonantShouldBeIgnored(letter))
             {
-                const auto to_encode = EncodeDigit(letter).front();
-                if (digits.empty() || to_encode != digits.back())
+                const auto to_encode = EncodeDigit(letter);
+                if (!to_encode.has_value())
+                    continue;
+                const auto value = to_encode.value();
+                if (digits.empty() || value != digits.back())
                 {
-                    digits.push_back(to_encode);
+                    digits.push_back(value);
                     ++encoded_consonants;
                 }
             }
@@ -65,23 +68,25 @@ private:
                std::end(ignored_consonants);
     }
 
-    auto EncodeDigit(const char letter) const -> std::string
+    auto EncodeDigit(const char letter) const -> std::optional<char>
     {
         // clang-format off
-        const static std::unordered_map<char, std::string> encodings
+        const static std::unordered_map<char, char> encodings
         {
-            { 'b', "1" }, { 'f', "1" }, { 'p', "1" }, { 'v', "1" },
-            { 'c', "2" }, { 'g', "2" }, { 'j', "2" }, { 'k', "2" }, { 'q', "2" },
-                               { 's', "2" }, { 'x', "2" }, { 'z', "2"},
-            { 'd', "3" }, { 't', "3" },
-            { 'l', "4" },
-            { 'm', "5" }, { 'n', "5" },
-            { 'r', "6" },
+            { 'b', '1' }, { 'f', '1' }, { 'p', '1' }, { 'v', '1' },
+            { 'c', '2' }, { 'g', '2' }, { 'j', '2' }, { 'k', '2' }, { 'q', '2' },
+                               { 's', '2' }, { 'x', '2' }, { 'z', '2'},
+            { 'd', '3' }, { 't', '3' },
+            { 'l', '4' },
+            { 'm', '5' }, { 'n', '5' },
+            { 'r', '6' },
         };
         // clang-format on
 
         const auto& item = encodings.find(letter);
-        return item == std::end(encodings) ? "" : item->second;
+        if (item == std::end(encodings))
+            return std::nullopt;
+        return item->second;
     }
 
     auto PadWithZeros(const std::string& word) const -> std::string
