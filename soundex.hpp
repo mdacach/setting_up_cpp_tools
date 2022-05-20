@@ -24,6 +24,8 @@ private:
     // Returns true if input is OK, false otherwise.
     auto SanitizeInput(const std::string& word) const -> bool
     {
+        if (std::size(word) == 0)
+            return false;
         return std::all_of(std::cbegin(word), std::cend(word),
                            [](char c)
                            {

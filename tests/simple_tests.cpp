@@ -93,6 +93,11 @@ TEST_CASE("Test Soundex Encoding", "[soundex_encoding]")
         CHECK_THROWS(soundex.Encode("Some sentence with spaces"));
         CHECK_THROWS(soundex.Encode(":/',f"));
     }
+
+    SECTION("Should throw on empty string")
+    {
+        CHECK_THROWS(soundex.Encode(""));
+    }
 }
 
 // Test list
